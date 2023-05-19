@@ -130,8 +130,8 @@ project.tasks['check'].dependsOn integration
 
 sonarqube {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+    property "sonar.projectName", "Reform :: hmi-libra-dtu"
+    property "sonar.projectKey", "uk.gov.hmcts.reform:hmi-libra-dtu"
   }
 }
 
@@ -204,10 +204,10 @@ dependencies {
   }
 }
 
-mainClassName = 'uk.gov.hmcts.reform.demo.Application'
+mainClassName = 'uk.gov.hmcts.reform.hmi.Application'
 
 bootJar {
-  archiveFileName = "spring-boot-template.jar"
+  archiveFileName = "hmi-libra-dtu.jar"
 
   manifest {
     attributes('Implementation-Version': project.version.toString())

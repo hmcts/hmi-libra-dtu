@@ -129,10 +129,14 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 project.tasks['check'].dependsOn integration
 
+def sonarExclusions = ["**/AzureBlobConfigurationProperties.java", "**/Application.java",
+                       "**/AzureBlobConfiguration.java"]
+
 sonarqube {
   properties {
     property "sonar.projectName", "Reform :: hmi-libra-dtu"
     property "sonar.projectKey", "uk.gov.hmcts.reform:hmi-libra-dtu"
+    property "sonar.exclusions", sonarExclusions.join(', ')
   }
 }
 

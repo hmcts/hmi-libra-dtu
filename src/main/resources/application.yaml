@@ -11,38 +11,32 @@ management:
       exposure:
         include: health, info, prometheus
 
-springdoc:
-  packagesToScan: uk.gov.hmcts.reform.libra-dtu.controllers
-  writer-with-order-by-keys: true
-
-#If you use a database then uncomment below lines and update db properties accordingly
 spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: ${TENANT_ID}
+        credential:
+          client-id: ${CLIENT_ID}
+          client-secret: ${CLIENT_SECRET}
+        authorization-clients:
+          hmiApim:
+            authorization-grant-type: client_credentials
+            scopes:
+              - ${HMI_APIM_AZ_API}/.default
+
   config:
-    import: "optional:configtree:/mnt/secrets/hmi/"
+    import: "optional:configtree:/mnt/secrets/hmi-kv/"
   application:
     name: HMI Libra DTU
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_OPTIONS:}
-#    username: ${DB_USER_NAME}
-#    password: ${DB_PASSWORD}
-#    properties:
-#      charSet: UTF-8
-#    hikari:
-#      minimumIdle: 2
-#      maximumPoolSize: 10
-#      idleTimeout: 10000
-#      poolName: {to-be-defined}HikariCP
-#      maxLifetime: 7200000
-#      connectionTimeout: 30000
-#  jpa:
-#    properties:
-#      hibernate:
-#        jdbc:
-#          lob:
-#            # silence the 'wall-of-text' - unnecessary exception throw about blob types
-#            non_contextual_creation: true
 
 azure:
-  application-insights:
-    instrumentation-key: ${hmi.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
+  blob:
+    connection-string: ${CONNECTION_STRING}
+    libra-container-name: libra
+    processing-container-name: processing
+
+service-to-service:
+  hmi-apim: ${HMI_APIM}

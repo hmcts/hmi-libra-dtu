@@ -1,12 +1,12 @@
 apiVersion: v2
 appVersion: "1.0"
 description: A Helm chart for hmi-libra-dtu App
-name: hmi-hmi-libra-dtu
+name: hmi-libra-dtu
 home: https://github.com/hmcts/hmi-libra-dtu
-version: 0.0.6
+version: 0.0.11
 maintainers:
-  - name: HMCTS hmi team
+  - name: HMCTS HMI team
 dependencies:
-  - name: java
-    version: 4.1.1
+  - name: function
+    version: 2.3.4
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'

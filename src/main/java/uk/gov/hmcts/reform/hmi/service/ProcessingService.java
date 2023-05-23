@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Slf4j
 @Service
 public class ProcessingService {
@@ -23,7 +25,8 @@ public class ProcessingService {
 
         // Read the blob contents
         byte[] blobData  = azureBlobService.downloadBlob(blob.getName());
-        log.info(blobData.toString());
+        //TODO Remove and add better log when functionality added
+        log.info(Arrays.toString(blobData));
         log.info(String.format("Download blob %s", blob.getName()));
 
         //TODO Validation in here etc etc for json file

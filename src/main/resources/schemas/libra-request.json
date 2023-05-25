@@ -1,0 +1,688 @@
+{
+  "definitions": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "locationReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locationType": {
+          "type": "string",
+          "enum": [
+            "Region",
+            "Cluster",
+            "Court",
+            "Room"
+          ]
+        },
+        "locationReferenceType": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "locationId": {
+          "type": "string",
+          "maxLength": 20
+        }
+      },
+      "required": [
+        "locationType",
+        "locationReferenceType",
+        "locationId"
+      ]
+    },
+    "caseClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "caseClassificationService": {
+          "type": "string",
+          "maxLength": 8
+        },
+        "caseClassificationType": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "caseClassificationSubType": {
+          "type": "string",
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "caseClassificationService",
+        "caseClassificationType",
+        "caseClassificationSubType"
+      ]
+    },
+    "caseIdHMCTS": {
+      "type": "string",
+      "maxLength": 50,
+      "pattern": "^[!-~]+$"
+    },
+    "caseRelatedCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "relatedCaseIdHMCTS": {
+          "$ref": "#/definitions/caseIdHMCTS"
+        },
+        "relatedCaseCLRId": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "relatedCaseRelationshipType": {
+          "type": "string",
+          "maxLength": 8
+        },
+        "relatedCaseCopyPartiesFlag": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "relatedCaseIdHMCTS",
+        "relatedCaseCLRId",
+        "relatedCaseRelationshipType"
+      ]
+    },
+    "caseLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "linkedHearingGroupStatus": {
+      "type": "string",
+      "enum": [
+        "Not Required",
+        "Required"
+      ]
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "caseVersionId": {
+          "type": "integer"
+        },
+        "caseTitle": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^[!-~]([ -~]*[!-~])?$"
+        },
+        "casePublishedName": {
+          "type": "string",
+          "maxLength": 500,
+          "pattern": "^[!-~]([ -~]*[!-~])?$"
+        },
+        "caseUrl": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "caseJurisdiction": {
+          "type": "string",
+          "maxLength": 4
+        },
+        "caseCourt": {
+          "$ref": "#/definitions/locationReference"
+        },
+        "caseRegistered": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "caseComments": {
+          "type": "string",
+          "maxLength": 5000
+        },
+        "caseAdditionalSecurityFlag": {
+          "type": "boolean"
+        },
+        "caseRestrictedFlag": {
+          "type": "boolean"
+        },
+        "caseInterpreterRequiredFlag": {
+          "type": "boolean"
+        },
+        "caseReportingRestrictions": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "caseClassifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/caseClassification"
+          },
+          "default": []
+        },
+        "caseRelatedCases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/caseRelatedCase"
+          },
+          "default": []
+        },
+        "caseLinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/caseLink"
+          },
+          "default": []
+        },
+        "linkedHearingGroupStatus": {
+          "$ref": "#/definitions/linkedHearingGroupStatus"
+        },
+        "linkedHearingReason": {
+          "type": "string",
+          "maxLength": 8
+        }
+      },
+      "required": [
+        "caseTitle",
+        "caseJurisdiction",
+        "caseCourt",
+        "caseRegistered",
+        "caseClassifications"
+      ]
+    },
+    "caseListingRequestId": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "entityId": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "entityTypeCode": {
+      "type": "string",
+      "enum": [
+        "IND",
+        "ORG"
+      ]
+    },
+    "entityClassCode": {
+      "enum":["PERSON"]
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityClassCode": {
+          "$ref": "#/definitions/entityClassCode",
+          "enum":["PERSON"]
+        },
+        "entityTitle": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "entityFirstName": {
+          "type": "string",
+          "maxLength": 100,
+          "pattern": "^[!-~]([ -~]*[!-~])?$"
+        },
+        "entityLastName": {
+          "type": "string",
+          "maxLength": 730,
+          "pattern": "^[!-~]([ -~]*[!-~])?$"
+        },
+        "entityGender": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "entityDateOfBirth": {
+          "type": "string",
+          "format": "date"
+        },
+        "entityYouth": {
+          "type": "boolean"
+        },
+        "entityComments": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "entitySensitiveClient": {
+          "type": "boolean"
+        },
+        "entityAlertMessage": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "entityInterpreterLanguage": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "entitySpecialNeedsVisual": {
+          "type": "boolean"
+        },
+        "entitySpecialNeedsAuditory": {
+          "type": "boolean"
+        },
+        "entitySpecialNeedsMobility": {
+          "type": "boolean"
+        },
+        "entitySpecialNeedsOther": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "entityCustodyStatus": {
+          "type": "string",
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "entityClassCode",
+        "entityFirstName",
+        "entityLastName"
+      ]
+    },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityClassCode": {
+          "$ref": "#/definitions/entityClassCode",
+          "enum":["ORG"]
+        },
+        "entityCompanyName": {
+          "type": "string",
+          "maxLength": 2000,
+          "pattern": "^[!-~]([ -~]*[!-~])?$"
+        }
+      },
+      "required": [
+        "entityClassCode",
+        "entityCompanyName"
+      ]
+    },
+    "entityAlias": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "aliasGivenName": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "aliasLastName": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "aliasPreferred": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "aliasLastName",
+        "aliasPreferred"
+      ]
+    },
+    "entityCommunication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityCommunicationType": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "entityCommunicationDetails": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "entityCommunicationComments": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "entityCommunicationPreferred": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "entityCommunicationType",
+        "entityCommunicationDetails"
+      ]
+    },
+    "entityOffence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offenceId": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "offenceClass": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "offenceStatement": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "offenceTitle": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "offenceTitleWelsh": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "offenceWording": {
+          "type": "string",
+          "maxLength": 3000
+        },
+        "offenceLegislation": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "offenceDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "offenceEndDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "offenceCount": {
+          "type": "integer"
+        },
+        "offenceRank": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "offenceId",
+        "offenceTitle",
+        "offenceWording",
+        "offenceDate"
+      ]
+    },
+    "entityRelatedEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "relatedEntityId": {
+          "$ref": "#/definitions/entityId"
+        },
+        "relatedEntityRelationshipType": {
+          "type": "string",
+          "maxLength": 10
+        }
+      },
+      "required": [
+        "relatedEntityId",
+        "relatedEntityRelationshipType"
+      ]
+    },
+    "entityUnavailableDay": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "unavailableDayOfWeek": {
+          "type": "string",
+          "enum": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ]
+        },
+        "unavailableType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "unavailableDayOfWeek",
+        "unavailableType"
+      ]
+    },
+    "entityUnavailableDate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "unavailableStartDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "unavailableEndDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "unavailableType": {
+          "type": "string"
+        },
+        "unavailableComment": {
+          "type": "string",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "unavailableStartDate",
+        "unavailableEndDate",
+        "unavailableType"
+      ]
+    },
+    "listingSession": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sessionIdCaseHQ": {
+          "type": "string"
+        },
+        "listingStartTime": {
+          "type": "string"
+        },
+        "listingRoom": {
+          "$ref": "#/definitions/locationReference"
+        },
+        "listingStartDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "listingDuration": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "multipleOf": 5
+        },
+        "reservationIdCaseHQ": {
+          "type": "string"
+        },
+        "listingStatus": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "listingStatus"
+      ]
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "#/definitions/entityId"
+        },
+        "entityTypeCode": {
+          "$ref": "#/definitions/entityTypeCode"
+        },
+        "entityRoleCode": {
+          "type": "string",
+          "maxLength": 6
+        },
+        "entitySubType": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/person"
+            },
+            {
+              "$ref": "#/definitions/company"
+            }
+          ],
+          "if": {
+            "properties": { "entityClassCode": { "const": "PERSON" } }
+          },
+          "then": {
+            "required": [ "entityFirstName", "entityLastName" ]
+          },
+          "else": {
+            "required": [ "entityCompanyName" ]
+          }
+        },
+        "entityAliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entityAlias"
+          }
+        },
+        "entityCommunications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entityCommunication"
+          },
+          "default": []
+        },
+        "entityOffences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entityOffence"
+          }
+        },
+        "entityRelatedEntities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entityRelatedEntity"
+          },
+          "default": []
+        },
+        "entityOtherConsiderations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 10
+          }
+        },
+        "entityUnavailableDays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entityUnavailableDay"
+          },
+          "default": []
+        },
+        "entityUnavailableDates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entityUnavailableDate"
+          },
+          "default": []
+        },
+        "entityHearingChannel": {
+          "type": "string",
+          "maxLength": 20
+        }
+      },
+      "required": [
+        "entityId",
+        "entityTypeCode",
+        "entityRoleCode"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "listingRequest"
+  ],
+  "properties": {
+    "@schemaLocation": {
+      "$id": "#root/@schemaLocation",
+      "title": "@schemalocation",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "http://json-schema.org/draft-07/schema#"
+      ],
+      "pattern": "^.*$"
+    },
+    "listingRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/meta"
+        },
+        "_case": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/case"
+            },
+            {
+              "properties": {
+                "caseIdHMCTS": {
+                  "$ref": "#/definitions/caseIdHMCTS"
+                },
+                "caseListingRequestId": {
+                  "$ref": "#/definitions/caseListingRequestId"
+                }
+              },
+              "required": [
+                "caseIdHMCTS",
+                "caseListingRequestId"
+              ]
+            }
+          ]
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/entity",
+                "required": [
+                  "entityRoleCode",
+                  "entityTypeCode",
+                  "entitySubType"
+                ]
+              }
+            ]
+          }
+        },
+        "listing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "listingType": {
+              "type": "string"
+            },
+            "listingSessions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/listingSession"
+              }
+            }
+          },
+          "required": [
+            "listingType",
+            "listingSessions"
+          ]
+        }
+      },
+      "required": [
+        "_case",
+        "listing"
+      ]
+    }
+  }
+}

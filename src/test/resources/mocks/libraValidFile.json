@@ -1,0 +1,64 @@
+{
+  "listingRequest":{
+    "meta":{
+
+    },
+    "_case":{
+      "caseIdHMCTS":"2300000018",
+      "caseListingRequestId":"1254361",
+      "caseVersionID":"",
+      "caseTitle":"2300000018",
+      "caseJurisdiction":"B",
+      "caseCourt":{
+        "locationType":"Court",
+        "locationReferenceType":"EXTERNAL",
+        "locationId":""
+      },
+      "caseRegistered":"2023-05-22T00:00:00+00:00",
+      "caseReportingRestrictions":"",
+      "caseClassifications":[
+        {
+          "caseClassificationService":"MAGS",
+          "caseClassificationType":"CASE",
+          "caseClassificationSubType":"S"
+        }
+      ]
+    },
+    "entities":[
+      {
+        "entityId":"1128076",
+        "entityTypeCode":"IND",
+        "entityRoleCode":"DEF",
+        "entitySubType":{
+          "entityClassCode":"PERSON",
+          "entityFirstName":"TESTF",
+          "entityLastName":"CASEA"
+        },
+        "entityOffences":[
+          {
+            "offenceId":"1",
+            "offenceClass":"3",
+            "offenceTitle":"Theft from the person of another",
+            "offenceWording":"On 22/05/2023 at TEST stole TEST, to the value of 100, belonging to TEST.",
+            "offenceLegislation":"Contrary to section 1(1) and 7 of the Theft Act 1968.",
+            "offenceDate":"2023-05-22"
+          }
+        ]
+      }
+    ],
+    "listing":{
+      "listingType":"G",
+      "listingSessions":[
+        {
+          "listingRoom":{
+            "locationType":"Room",
+            "locationReferenceType":"EXTERNAL",
+            "locationId":"000"
+          },
+          "listingStartDate":"2023-05-22T09:00:00+00:00",
+          "listingStatus":"FIXED"
+        }
+      ]
+    }
+  }
+}

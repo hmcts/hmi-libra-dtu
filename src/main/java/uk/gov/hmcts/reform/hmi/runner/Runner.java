@@ -46,7 +46,9 @@ public class Runner implements CommandLineRunner {
             //Process the selected blob
             //TODO Mocked for now
             String jsonData = processingService.processFile(blob);
-            distributionService.sendProcessedJson(jsonData);
+            if (jsonData != null) {
+                distributionService.sendProcessedJson(jsonData);
+            }
 
 
             // Delete the processed file as we no longer need it

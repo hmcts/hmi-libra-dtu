@@ -209,7 +209,7 @@ dependencies {
 
   implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-  implementation 'com.networknt:json-schema-validator:1.0.82'
+  implementation group: 'com.networknt', name: 'json-schema-validator', version: '1.0.82'
 
   testImplementation(platform('org.junit:junit-bom:5.9.3'))
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

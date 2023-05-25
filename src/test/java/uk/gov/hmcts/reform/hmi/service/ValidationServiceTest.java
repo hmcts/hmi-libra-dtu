@@ -51,6 +51,15 @@ class ValidationServiceTest {
     }
 
     @Test
+    void testInvalidJsonSchemaReturnsFalse() {
+        byte[] libraJsonAsByte = TEST.getBytes(StandardCharsets.UTF_8);
+        assertFalse(validationService.isValid("mocks/invalidSchema.json", libraJsonAsByte),
+                    EXPECTED_MESSAGE);
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Failed to get libra json schema file"),
+                   "Error log did not contain message");
+    }
+
+    @Test
     void testInvalidJsonReturnsFalse() {
         byte[] libraJsonAsByte = TEST.getBytes(StandardCharsets.UTF_8);
         assertFalse(validationService.isValid(LIBRA_JSON_SCHEMA, libraJsonAsByte),

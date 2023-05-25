@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.hmi.config.ValidationConfiguration;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 @Slf4j
 @Service
@@ -35,9 +34,10 @@ public class ProcessingService {
 
         // Read the blob contents
         byte[] blobData  = azureBlobService.downloadBlob(blob.getName());
-        //TODO Remove and add better log when functionality added
-        log.info(Arrays.toString(blobData));
+
         log.info(String.format("Download blob %s", blob.getName()));
+        log.info(String.format("Download blob %s data: %s", blob.getName(),
+                               new String(blobData, StandardCharsets.UTF_8)));
 
         //VALIDATE JSON FILE AGAINST SCHEMA FILE PROVIDED BY ROTA
         boolean isFileValid = validationService.isValid(validationConfiguration.getLibraHmiSchema(), blobData);

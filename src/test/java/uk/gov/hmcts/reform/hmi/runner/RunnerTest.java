@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.hmi.service.ProcessingService;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -55,7 +56,7 @@ class RunnerTest {
                 RESPONSE_MESSAGE
             );
 
-            assertTrue(logCaptor.getInfoLogs().size() == 1,
+            assertEquals(1, logCaptor.getInfoLogs().size(),
                        "More info logs than expected"
             );
         }
@@ -92,7 +93,7 @@ class RunnerTest {
                 RESPONSE_MESSAGE
             );
 
-            assertTrue(logCaptor.getInfoLogs().size() == 3,
+            assertEquals(3, logCaptor.getInfoLogs().size(),
                        "More info logs than expected"
             );
         }
@@ -128,7 +129,7 @@ class RunnerTest {
                 RESPONSE_MESSAGE
             );
 
-            assertTrue(logCaptor.getInfoLogs().size() == 3,
+            assertEquals(3, logCaptor.getInfoLogs().size(),
                        "More info logs than expected"
             );
         }

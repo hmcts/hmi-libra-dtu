@@ -27,9 +27,9 @@ public class AzureBlobConfigurationTestConfiguration {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Bean(name = "rota")
+    @Bean(name = "libra")
     @Primary
-    public BlobContainerClient rotaBlobContainerClient() {
+    public BlobContainerClient libraBlobContainerClient() {
         return blobContainerClientMock;
     }
 

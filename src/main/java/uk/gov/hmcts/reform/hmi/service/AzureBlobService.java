@@ -18,23 +18,23 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class AzureBlobService {
-    private final BlobContainerClient rotaBlobContainerClient;
+    private final BlobContainerClient libraBlobContainerClient;
     private final BlobContainerClient processingBlobContainerClient;
 
     @Autowired
-    public AzureBlobService(@Qualifier("libra") BlobContainerClient rotaBlobContainerClient,
+    public AzureBlobService(@Qualifier("libra") BlobContainerClient libraBlobContainerClient,
                             @Qualifier("processing") BlobContainerClient processingBlobContainerClient) {
-        this.rotaBlobContainerClient = rotaBlobContainerClient;
+        this.libraBlobContainerClient = libraBlobContainerClient;
         this.processingBlobContainerClient = processingBlobContainerClient;
     }
 
     public List<BlobItem> getBlobs() {
-        PagedIterable<BlobItem> blobs = rotaBlobContainerClient.listBlobs();
+        PagedIterable<BlobItem> blobs = libraBlobContainerClient.listBlobs();
         return blobs.stream().toList();
     }
 
     public String deleteOriginalBlob(String fileName) {
-        BlobClient blobClient = rotaBlobContainerClient.getBlobClient(fileName);
+        BlobClient blobClient = libraBlobContainerClient.getBlobClient(fileName);
         blobClient.delete();
         return String.format("Blob: %s successfully deleted.", fileName);
     }
@@ -46,7 +46,7 @@ public class AzureBlobService {
     }
 
     public void copyBlobToProcessingContainer(String fileName, String leaseId) {
-        BlobClient currentBlob = rotaBlobContainerClient.getBlobClient(fileName);
+        BlobClient currentBlob = libraBlobContainerClient.getBlobClient(fileName);
         BlobClient processingBlob = processingBlobContainerClient.getBlobClient(fileName);
 
         BlobLeaseClient leaseClient = setupBlobLease(currentBlob, Optional.of(leaseId));
@@ -59,7 +59,7 @@ public class AzureBlobService {
     }
 
     public String acquireBlobLease(String fileName) {
-        BlobClient blob = rotaBlobContainerClient.getBlobClient(fileName);
+        BlobClient blob = libraBlobContainerClient.getBlobClient(fileName);
         BlobLeaseClient leaseClient = setupBlobLease(blob, Optional.empty());
 
         return leaseClient.acquireLease(60);

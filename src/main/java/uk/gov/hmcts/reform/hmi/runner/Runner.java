@@ -45,12 +45,10 @@ public class Runner implements CommandLineRunner {
             BlobItem blob = blobToProcess.get();
 
             //Process the selected blob
-            //TODO Mocked for now
             String jsonData = processingService.processFile(blob);
             if (!StringUtils.isEmpty(jsonData)) {
                 distributionService.sendProcessedJson(jsonData);
             }
-
 
             // Delete the processed file as we no longer need it
             azureBlobService.deleteProcessingBlob(blob.getName());

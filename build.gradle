@@ -4,7 +4,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.0'
-  id 'org.springframework.boot' version '3.1.0'
+  id 'org.springframework.boot' version '3.0.6'
   id 'org.owasp.dependencycheck' version '8.2.1'
   id 'com.github.ben-manes.versions' version '0.46.0'
   id 'org.sonarqube' version '4.0.0.2929'
@@ -130,7 +130,7 @@ project.tasks['sonarqube'].dependsOn jacocoTestReport
 project.tasks['check'].dependsOn integration
 
 def sonarExclusions = ["**/AzureBlobConfigurationProperties.java", "**/Application.java",
-                       "**/AzureBlobConfiguration.java"]
+                       "**/AzureBlobConfiguration.java", "**/ValidationConfiguration.java"]
 
 sonarqube {
   properties {
@@ -194,7 +194,6 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 
   implementation group: 'com.azure.spring', name: 'spring-cloud-azure-starter-active-directory', version: '5.1.0'
@@ -209,6 +208,8 @@ dependencies {
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.22.0'
 
   implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
+  implementation group: 'com.networknt', name: 'json-schema-validator', version: '1.0.82'
 
   testImplementation(platform('org.junit:junit-bom:5.9.3'))
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

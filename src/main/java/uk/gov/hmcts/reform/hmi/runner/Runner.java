@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.hmi.runner;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.LeaseStatusType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,9 @@ public class Runner implements CommandLineRunner {
             //Process the selected blob
             //TODO Mocked for now
             String jsonData = processingService.processFile(blob);
-            distributionService.sendProcessedJson(jsonData);
+            if (!StringUtils.isEmpty(jsonData)) {
+                distributionService.sendProcessedJson(jsonData);
+            }
 
 
             // Delete the processed file as we no longer need it

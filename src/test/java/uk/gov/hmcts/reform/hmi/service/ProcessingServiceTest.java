@@ -7,8 +7,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.hmi.config.ValidationConfiguration;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +22,12 @@ class ProcessingServiceTest {
 
     @Mock
     AzureBlobService azureBlobService;
+
+    @Mock
+    ValidationService validationService;
+
+    @Mock
+    ValidationConfiguration validationConfiguration;
 
     @InjectMocks
     private ProcessingService processingService;
@@ -29,14 +39,31 @@ class ProcessingServiceTest {
     void testProcessFile() {
         when(azureBlobService.acquireBlobLease(TEST)).thenReturn(TEST_DATA);
         doNothing().when(azureBlobService).copyBlobToProcessingContainer(TEST, TEST_DATA);
-        when(azureBlobService.downloadBlob(TEST)).thenReturn(new byte[100]);
-
+        when(azureBlobService.downloadBlob(TEST)).thenReturn(TEST.getBytes(StandardCharsets.UTF_8));
+        when(validationConfiguration.getLibraHmiSchema()).thenReturn("path");
+        when(validationService.isValid(any(), any())).thenReturn(true);
 
         BlobItem blobItem = new BlobItem();
         blobItem.setName(TEST);
 
         String result = processingService.processFile(blobItem);
-        assertEquals("MOCK - LIBRA DTU TEMP", result,
+        assertEquals(TEST, result,
+                     "Expected and actual didn't match");
+    }
+
+    @Test
+    void testProcessInvalidFile() {
+        when(azureBlobService.acquireBlobLease(TEST)).thenReturn(TEST_DATA);
+        doNothing().when(azureBlobService).copyBlobToProcessingContainer(TEST, TEST_DATA);
+        when(azureBlobService.downloadBlob(TEST)).thenReturn(TEST.getBytes(StandardCharsets.UTF_8));
+        when(validationConfiguration.getLibraHmiSchema()).thenReturn("path");
+        when(validationService.isValid(any(), any())).thenReturn(false);
+
+        BlobItem blobItem = new BlobItem();
+        blobItem.setName(TEST);
+
+        String result = processingService.processFile(blobItem);
+        assertEquals(null, result,
                      "Expected and actual didn't match");
     }
 }

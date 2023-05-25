@@ -40,3 +40,6 @@ azure:
 
 service-to-service:
   hmi-apim: ${HMI_APIM}
+
+validations:
+  libra-hmi-schema: "schemas/libra-request.json"

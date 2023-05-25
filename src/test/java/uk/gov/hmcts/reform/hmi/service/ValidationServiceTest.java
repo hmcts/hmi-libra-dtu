@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,6 +24,7 @@ class ValidationServiceTest {
     private static final String LIBRA_VALID_JSON = "mocks/libraValidFile.json";
     private static final String LIBRA_INVALID_JSON = "mocks/libraInvalidFile.json";
     private static final String EXPECTED_MESSAGE = "Expected and actual don't match";
+    private static final String TEST = "Test";
 
     LogCaptor logCaptor = LogCaptor.forClass(ValidationService.class);
 
@@ -46,6 +48,15 @@ class ValidationServiceTest {
             assertTrue(logCaptor.getErrorLogs().get(0).contains("Failed to validate the schema with error message"),
                        "Error log did not contain message");
         }
+    }
+
+    @Test
+    void testInvalidJsonReturnsFalse() {
+        byte[] libraJsonAsByte = TEST.getBytes(StandardCharsets.UTF_8);
+        assertFalse(validationService.isValid(LIBRA_JSON_SCHEMA, libraJsonAsByte),
+                    EXPECTED_MESSAGE);
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Failed to validate the schema with exception"),
+                   "Error log did not contain message");
     }
 }
 

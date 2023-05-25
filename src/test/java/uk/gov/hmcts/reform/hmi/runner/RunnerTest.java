@@ -14,9 +14,7 @@ import uk.gov.hmcts.reform.hmi.service.DistributionService;
 import uk.gov.hmcts.reform.hmi.service.ProcessingService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,10 +72,43 @@ class RunnerTest {
             when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
             when(processingService.processFile(any())).thenReturn("MOCK");
 
-            Map<String, String> testMap = new ConcurrentHashMap<>();
-            testMap.put("test", "test-json-data");
-
             when(distributionService.sendProcessedJson(any())).thenReturn(CompletableFuture.completedFuture(true));
+            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
+
+            runner.run();
+
+            assertTrue(
+                logCaptor.getInfoLogs().get(0).contains("All blobs retrieved"),
+                RESPONSE_MESSAGE
+            );
+
+            assertTrue(
+                logCaptor.getInfoLogs().get(1).contains("Eligible blob selected to process"),
+                RESPONSE_MESSAGE
+            );
+
+            assertTrue(
+                logCaptor.getInfoLogs().get(2).contains("Blob processed, shutting down"),
+                RESPONSE_MESSAGE
+            );
+
+            assertTrue(logCaptor.getInfoLogs().size() == 3,
+                       "More info logs than expected"
+            );
+        }
+    }
+
+    @Test
+    void testRunnerWithInvalidBlobToProcess() {
+        try (LogCaptor logCaptor = LogCaptor.forClass(Runner.class)) {
+            BlobItem blobItem = new BlobItem();
+            blobItem.setName(TEST);
+            BlobItemProperties blobItemProperties = new BlobItemProperties();
+            blobItemProperties.setLeaseStatus(LeaseStatusType.UNLOCKED);
+            blobItem.setProperties(blobItemProperties);
+            when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
+            when(processingService.processFile(any())).thenReturn(null);
+
             when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
 
             runner.run();

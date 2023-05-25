@@ -50,4 +50,20 @@ class ProcessingServiceTest {
         assertEquals(TEST, result,
                      "Expected and actual didn't match");
     }
+
+    @Test
+    void testProcessInvalidFile() {
+        when(azureBlobService.acquireBlobLease(TEST)).thenReturn(TEST_DATA);
+        doNothing().when(azureBlobService).copyBlobToProcessingContainer(TEST, TEST_DATA);
+        when(azureBlobService.downloadBlob(TEST)).thenReturn(TEST.getBytes(StandardCharsets.UTF_8));
+        when(validationConfiguration.getLibraHmiSchema()).thenReturn("path");
+        when(validationService.isValid(any(), any())).thenReturn(false);
+
+        BlobItem blobItem = new BlobItem();
+        blobItem.setName(TEST);
+
+        String result = processingService.processFile(blobItem);
+        assertEquals(null, result,
+                     "Expected and actual didn't match");
+    }
 }

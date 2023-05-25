@@ -6,4 +6,24 @@ def type = "java"
 def product = "hmi"
 def component = "libra-dtu"
 
-withPipeline(type, product, component) {}
+withPipeline(type, product, component) {
+
+  onMaster() {
+    env.ENV = 'stg'
+  }
+  onPR() {
+    env.ENV = 'dev'
+  }
+  onDemo {
+    env.ENV = 'demo'
+  }
+  onPerftest {
+    env.ENV = 'perftest'
+  }
+  onIthc {
+    env.ENV = 'ithc'
+  }
+
+  enableSlackNotifications('#hmi-build-notices')
+  nonServiceApp()
+}

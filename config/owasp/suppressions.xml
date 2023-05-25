@@ -10,10 +10,13 @@
   <!--End of false positives section -->
 
   <!--Please add all the temporary suppression under the below section-->
-  <suppress until="2023-04-14">
-    <notes>
-    </notes>
+  <suppress until="2024-04-14">
+    <notes>Bug in snakeyaml, part of spring.</notes>
     <cve>CVE-2022-1471</cve>
+  </suppress>
+  <suppress>
+    <notes>Bug with azure_active_directory.</notes>
+    <cve>CVE-2021-42306</cve>
   </suppress>
   <!--End of temporary suppression section -->
 </suppressions>

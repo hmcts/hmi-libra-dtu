@@ -78,8 +78,8 @@ class RunnerTest {
             blobItem.setProperties(blobItemProperties);
             when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
             when(processingService.processFile(any())).thenReturn("MOCK");
+            when(distributionService.sendProcessedJson(any())).thenReturn(null);
 
-            when(distributionService.sendProcessedJson(any())).thenReturn("Success");
             when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
 
             runner.run();
@@ -116,6 +116,7 @@ class RunnerTest {
             when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
             when(processingService.processFile(any())).thenReturn(null);
 
+            when(serviceNowService.createServiceNowRequest(any(), any())).thenReturn(true);
             when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
 
             runner.run();
@@ -135,8 +136,17 @@ class RunnerTest {
                 RESPONSE_MESSAGE
             );
 
+            assertTrue(
+                logCaptor.getErrorLogs().get(0).contains("Failed to valid the file"),
+                RESPONSE_MESSAGE
+            );
+
             assertEquals(3, logCaptor.getInfoLogs().size(),
                        MORE_INFO_THEN_EXPECTED
+            );
+
+            assertEquals(1, logCaptor.getErrorLogs().size(),
+                         MORE_INFO_THEN_EXPECTED
             );
         }
     }

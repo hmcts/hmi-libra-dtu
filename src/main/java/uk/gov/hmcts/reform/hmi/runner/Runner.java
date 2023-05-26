@@ -60,6 +60,10 @@ public class Runner implements CommandLineRunner {
                     log.info("Blob failed");
                     formatErrorResponse(responseErrors, blob.getName(), response);
                 }
+            } else {
+                log.error(String.format("Failed to valid the file %s against schema.", blob.getName()));
+                formatErrorResponse(responseErrors, blob.getName(),
+                                    "Failed to valid the file against schema.");
             }
 
             //Raise SNOW ticket

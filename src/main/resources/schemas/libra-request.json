@@ -3,7 +3,15 @@
     "meta": {
       "type": "object",
       "additionalProperties": false,
-      "properties": {},
+      "properties": {
+        "transactionIdCaseHQ": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
       "required": []
     },
     "locationReference": {
@@ -40,7 +48,7 @@
       "properties": {
         "caseClassificationService": {
           "type": "string",
-          "maxLength": 8
+          "maxLength": 255
         },
         "caseClassificationType": {
           "type": "string",
@@ -71,7 +79,7 @@
         },
         "relatedCaseCLRId": {
           "type": "string",
-          "maxLength": 10
+          "maxLength": 50
         },
         "relatedCaseRelationshipType": {
           "type": "string",
@@ -125,7 +133,7 @@
         },
         "casePublishedName": {
           "type": "string",
-          "maxLength": 500,
+          "maxLength": 1024,
           "pattern": "^[!-~]([ -~]*[!-~])?$"
         },
         "caseUrl": {
@@ -134,7 +142,7 @@
         },
         "caseJurisdiction": {
           "type": "string",
-          "maxLength": 4
+          "maxLength": 100
         },
         "caseCourt": {
           "$ref": "#/definitions/locationReference"
@@ -181,6 +189,13 @@
           },
           "default": []
         },
+        "caseMarkers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 255
+          }
+        },
         "linkedHearingGroupStatus": {
           "$ref": "#/definitions/linkedHearingGroupStatus"
         },
@@ -213,7 +228,11 @@
       ]
     },
     "entityClassCode": {
-      "enum":["PERSON"]
+      "type": "string",
+      "enum": [
+        "PERSON",
+        "ORG"
+      ]
     },
     "person": {
       "type": "object",
@@ -236,6 +255,10 @@
           "type": "string",
           "maxLength": 730,
           "pattern": "^[!-~]([ -~]*[!-~])?$"
+        },
+        "entityWelshName": {
+          "type": "string",
+          "maxLength": 1000
         },
         "entityGender": {
           "type": "string",
@@ -261,7 +284,7 @@
         },
         "entityInterpreterLanguage": {
           "type": "string",
-          "maxLength": 10
+          "maxLength": 100
         },
         "entitySpecialNeedsVisual": {
           "type": "boolean"
@@ -299,6 +322,10 @@
           "type": "string",
           "maxLength": 2000,
           "pattern": "^[!-~]([ -~]*[!-~])?$"
+        },
+        "entityWelshName": {
+          "type": "string",
+          "maxLength": 1000
         }
       },
       "required": [
@@ -415,7 +442,7 @@
         },
         "relatedEntityRelationshipType": {
           "type": "string",
-          "maxLength": 10
+          "maxLength": 100
         }
       },
       "required": [
@@ -440,7 +467,8 @@
           ]
         },
         "unavailableType": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 10
         }
       },
       "required": [
@@ -461,7 +489,8 @@
           "format": "date-time"
         },
         "unavailableType": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 10
         },
         "unavailableComment": {
           "type": "string",
@@ -499,6 +528,10 @@
         "reservationIdCaseHQ": {
           "type": "string"
         },
+        "listingOrder": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
         "listingStatus": {
           "type": "string"
         }
@@ -519,7 +552,7 @@
         },
         "entityRoleCode": {
           "type": "string",
-          "maxLength": 6
+          "maxLength": 50
         },
         "entitySubType": {
           "oneOf": [
@@ -570,7 +603,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "maxLength": 10
+            "maxLength": 100
           }
         },
         "entityUnavailableDays": {
@@ -589,7 +622,7 @@
         },
         "entityHearingChannel": {
           "type": "string",
-          "maxLength": 20
+          "maxLength": 100
         }
       },
       "required": [
@@ -635,6 +668,42 @@
                 },
                 "caseListingRequestId": {
                   "$ref": "#/definitions/caseListingRequestId"
+                },
+                "linkedHearingGroup": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "groupClientReference": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "groupName": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "groupReason": {
+                      "type": "string",
+                      "maxLength": 8
+                    },
+                    "groupComment": {
+                      "type": "string",
+                      "maxLength": 4000
+                    },
+                    "groupLinkType": {
+                      "type": "string",
+                      "enum": [
+                        "Same Slot",
+                        "Ordered"
+                      ]
+                    },
+                    "caseLinkOrder": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "groupClientReference",
+                    "groupLinkType"
+                  ]
                 }
               },
               "required": [
@@ -661,10 +730,72 @@
         },
         "listing": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "listingType": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 50
+            },
+            "listingPriority": {
+              "type": "string",
+              "maxLength": 10
+            },
+            "listingLanguage": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "listingLanguageComment": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "listingRoomAttributes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "listingOtherConsiderations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 100
+              }
+            },
+            "listingJohTiers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 10
+              }
+            },
+            "listingJohTickets": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 10
+              }
+            },
+            "listingJohSpecialisms": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 10
+              }
+            },
+            "listingJohs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/listingJoh"
+              },
+              "default": []
+            },
+            "listingHearingChannels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 100
+              }
             },
             "listingSessions": {
               "type": "array",

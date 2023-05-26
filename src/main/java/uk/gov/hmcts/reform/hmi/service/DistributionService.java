@@ -3,17 +3,14 @@ package uk.gov.hmcts.reform.hmi.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
@@ -32,24 +29,27 @@ public class DistributionService {
         this.url = url;
     }
 
-    @Async
-    public Future<Boolean> sendProcessedJson(String jsonData) {
+    public String sendProcessedJson(String jsonData) {
         try {
-            webClient.post().uri(url + "/listings")
+            String apiResponse = webClient.post().uri(url + "/listings")
                 .attributes(clientRegistrationId("hmiApim"))
                 .header("Source-System", "CRIME")
-                .header("Destination-System", "MOCK") //TODO Update with SNL
+                .header("Destination-System", "SNL")
                 .header("Request-Created-At", simpleDateFormat.format(new Date()))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .body(BodyInserters.fromValue(jsonData)).retrieve()
-                .bodyToMono(String.class).block();
-            log.info("Json data has been sent");
-            return CompletableFuture.completedFuture(true);
-        } catch (WebClientException ex) {
+                .body(BodyInserters.fromValue(jsonData))
+                .retrieve()
+                .onStatus(
+                    HttpStatus.BAD_REQUEST::equals,
+                    response -> response.bodyToMono(String.class).map(Exception::new))
+                .bodyToMono(String.class)
+                .block();
+            log.info(String.format("Json data has been sent with response: %s", apiResponse));
+            return apiResponse;
+        } catch (Exception ex) { //NOSONAR
             log.error("Error response from HMI APIM:", ex.getMessage());
-
-            return CompletableFuture.completedFuture(false);
+            return ex.getMessage();
         }
     }
 }

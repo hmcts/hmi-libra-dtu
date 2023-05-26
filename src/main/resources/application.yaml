@@ -41,5 +41,14 @@ azure:
 service-to-service:
   hmi-apim: ${HMI_APIM}
 
+service-now:
+  sn_url: ${SN_URL}
+  username: ${SN_USERNAME}
+  password: ${SN_PASSWORD}
+  assignment_group: ${SN_ASSIGNMENT_GROUP}
+  caller_id: ${SN_CALLER_ID}
+  service-offering: ${SN_SERVICE_OFFERING}
+  role_type: ${SN_ROLE_TYPE}
+
 validations:
   libra-hmi-schema: "schemas/libra-request.json"

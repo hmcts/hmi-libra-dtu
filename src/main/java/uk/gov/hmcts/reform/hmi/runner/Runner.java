@@ -55,7 +55,7 @@ public class Runner implements CommandLineRunner {
             if (!StringUtils.isEmpty(jsonData)) {
                 String response = distributionService.sendProcessedJson(jsonData);
 
-                if (response != null
+                if (!StringUtils.isEmpty(response)
                     && response.contains("java.lang.Exception")) {
                     log.info("Blob failed");
                     formatErrorResponse(responseErrors, blob.getName(), response);

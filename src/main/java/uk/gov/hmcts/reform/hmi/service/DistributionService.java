@@ -32,14 +32,13 @@ public class DistributionService {
         this.url = url;
     }
 
-    //TODO update for the correct endpoint for libra
     @Async
     public Future<Boolean> sendProcessedJson(String jsonData) {
         try {
-            webClient.post().uri(url + "/schedules")
+            webClient.post().uri(url + "/listings")
                 .attributes(clientRegistrationId("hmiApim"))
                 .header("Source-System", "CRIME")
-                .header("Destination-System", "MOCK")
+                .header("Destination-System", "MOCK") //TODO Update with SNL
                 .header("Request-Created-At", simpleDateFormat.format(new Date()))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")

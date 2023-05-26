@@ -69,7 +69,7 @@ public class Runner implements CommandLineRunner {
             //Raise SNOW ticket
             if (!responseErrors.toString().isEmpty()) {
                 serviceNowService.createServiceNowRequest(responseErrors,
-                    String.format("Error while send request to HMI for blob: %s", blob.getName()));
+                    String.format("Error while sending request to HMI for blob: %s", blob.getName()));
             }
 
             // Delete the processed file as we no longer need it

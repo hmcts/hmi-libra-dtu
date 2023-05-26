@@ -44,6 +44,9 @@ class RunnerTest {
     private static final String ALL_BLOB_RETRIEVED = "All blobs retrieved";
     private static final String MORE_INFO_THEN_EXPECTED = "More info logs than expected";
     private static final String RESPONSE_MESSAGE = "Info logs did not contain expected message";
+    private static final String ALL_BLOB_PROCESSED = "Blob processed, shutting down";
+    private static final String ELIGIBLE_BLOB_PROCESS = "Eligible blob selected to process";
+    private static final String FILE_DELETED = "fileDeleted";
 
     @Test
     void testRunnerWithNoEligibleBlobToProcess() throws JsonProcessingException {
@@ -80,7 +83,7 @@ class RunnerTest {
             when(processingService.processFile(any())).thenReturn("MOCK");
             when(distributionService.sendProcessedJson(any())).thenReturn(null);
 
-            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
+            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
 
             runner.run();
 
@@ -90,12 +93,12 @@ class RunnerTest {
             );
 
             assertTrue(
-                logCaptor.getInfoLogs().get(1).contains("Eligible blob selected to process"),
+                logCaptor.getInfoLogs().get(1).contains(ELIGIBLE_BLOB_PROCESS),
                 RESPONSE_MESSAGE
             );
 
             assertTrue(
-                logCaptor.getInfoLogs().get(2).contains("Blob processed, shutting down"),
+                logCaptor.getInfoLogs().get(2).contains(ALL_BLOB_PROCESSED),
                 RESPONSE_MESSAGE
             );
 
@@ -104,6 +107,44 @@ class RunnerTest {
             );
         }
     }
+
+    @Test
+    void testRunnerWithEligibleBlobToProcessReturnSuccess() throws JsonProcessingException {
+        try (LogCaptor logCaptor = LogCaptor.forClass(Runner.class)) {
+            BlobItem blobItem = new BlobItem();
+            blobItem.setName(TEST);
+            BlobItemProperties blobItemProperties = new BlobItemProperties();
+            blobItemProperties.setLeaseStatus(LeaseStatusType.UNLOCKED);
+            blobItem.setProperties(blobItemProperties);
+            when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
+            when(processingService.processFile(any())).thenReturn("MOCK");
+            when(distributionService.sendProcessedJson(any())).thenReturn("success");
+
+            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
+
+            runner.run();
+
+            assertTrue(
+                logCaptor.getInfoLogs().get(0).contains(ALL_BLOB_RETRIEVED),
+                RESPONSE_MESSAGE
+            );
+
+            assertTrue(
+                logCaptor.getInfoLogs().get(1).contains(ELIGIBLE_BLOB_PROCESS),
+                RESPONSE_MESSAGE
+            );
+
+            assertTrue(
+                logCaptor.getInfoLogs().get(2).contains(ALL_BLOB_PROCESSED),
+                RESPONSE_MESSAGE
+            );
+
+            assertEquals(3, logCaptor.getInfoLogs().size(),
+                         MORE_INFO_THEN_EXPECTED
+            );
+        }
+    }
+
 
     @Test
     void testRunnerWithInvalidBlobToProcess() throws JsonProcessingException {
@@ -117,7 +158,7 @@ class RunnerTest {
             when(processingService.processFile(any())).thenReturn(null);
 
             when(serviceNowService.createServiceNowRequest(any(), any())).thenReturn(true);
-            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
+            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
 
             runner.run();
 
@@ -127,12 +168,12 @@ class RunnerTest {
             );
 
             assertTrue(
-                logCaptor.getInfoLogs().get(1).contains("Eligible blob selected to process"),
+                logCaptor.getInfoLogs().get(1).contains(ELIGIBLE_BLOB_PROCESS),
                 RESPONSE_MESSAGE
             );
 
             assertTrue(
-                logCaptor.getInfoLogs().get(2).contains("Blob processed, shutting down"),
+                logCaptor.getInfoLogs().get(2).contains(ALL_BLOB_PROCESSED),
                 RESPONSE_MESSAGE
             );
 
@@ -164,7 +205,7 @@ class RunnerTest {
 
             when(distributionService.sendProcessedJson(any())).thenReturn("java.lang.Exception");
             when(serviceNowService.createServiceNowRequest(any(), any())).thenReturn(true);
-            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn("fileDeleted");
+            when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
 
             runner.run();
 
@@ -174,7 +215,7 @@ class RunnerTest {
             );
 
             assertTrue(
-                logCaptor.getInfoLogs().get(1).contains("Eligible blob selected to process"),
+                logCaptor.getInfoLogs().get(1).contains(ELIGIBLE_BLOB_PROCESS),
                 RESPONSE_MESSAGE
             );
 
@@ -184,7 +225,7 @@ class RunnerTest {
             );
 
             assertTrue(
-                logCaptor.getInfoLogs().get(3).contains("Blob processed, shutting down"),
+                logCaptor.getInfoLogs().get(3).contains(ALL_BLOB_PROCESSED),
                 RESPONSE_MESSAGE
             );
 

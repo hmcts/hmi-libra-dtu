@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.hmi.models.ApiResponse;
 import uk.gov.hmcts.reform.hmi.service.AzureBlobService;
 import uk.gov.hmcts.reform.hmi.service.DistributionService;
 import uk.gov.hmcts.reform.hmi.service.ProcessingService;
@@ -53,12 +54,11 @@ public class Runner implements CommandLineRunner {
             //Process the selected blob
             String jsonData = processingService.processFile(blob);
             if (!StringUtils.isEmpty(jsonData)) {
-                String response = distributionService.sendProcessedJson(jsonData);
+                ApiResponse response = distributionService.sendProcessedJson(jsonData);
 
-                if (!StringUtils.isEmpty(response)
-                    && response.contains("java.lang.Exception")) {
+                if (!response.getStatusCode().equals(204)) {
                     log.info("Blob failed");
-                    formatErrorResponse(responseErrors, blob.getName(), response);
+                    formatErrorResponse(responseErrors, blob.getName(), response.getMessage());
                 }
             } else {
                 log.error(String.format("Failed to valid the file %s against schema.", blob.getName()));

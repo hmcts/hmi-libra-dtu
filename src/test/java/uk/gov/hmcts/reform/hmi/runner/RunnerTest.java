@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.hmi.models.ApiResponse;
 import uk.gov.hmcts.reform.hmi.service.AzureBlobService;
 import uk.gov.hmcts.reform.hmi.service.DistributionService;
 import uk.gov.hmcts.reform.hmi.service.ProcessingService;
@@ -23,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.LawOfDemeter")
 class RunnerTest {
 
     @Mock
@@ -81,7 +84,8 @@ class RunnerTest {
             blobItem.setProperties(blobItemProperties);
             when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
             when(processingService.processFile(any())).thenReturn("MOCK");
-            when(distributionService.sendProcessedJson(any())).thenReturn(null);
+            when(distributionService.sendProcessedJson(any()))
+                .thenReturn(new ApiResponse(HttpStatus.NO_CONTENT.value(), ""));
 
             when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
 
@@ -118,7 +122,8 @@ class RunnerTest {
             blobItem.setProperties(blobItemProperties);
             when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
             when(processingService.processFile(any())).thenReturn("MOCK");
-            when(distributionService.sendProcessedJson(any())).thenReturn("success");
+            when(distributionService.sendProcessedJson(any()))
+                .thenReturn(new ApiResponse(HttpStatus.NO_CONTENT.value(), ""));
 
             when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
 
@@ -203,7 +208,8 @@ class RunnerTest {
             when(azureBlobService.getBlobs()).thenReturn(List.of(blobItem));
             when(processingService.processFile(any())).thenReturn("MOCK");
 
-            when(distributionService.sendProcessedJson(any())).thenReturn("java.lang.Exception");
+            when(distributionService.sendProcessedJson(any()))
+                .thenReturn(new ApiResponse(HttpStatus.BAD_REQUEST.value(), "Failed"));
             when(serviceNowService.createServiceNowRequest(any(), any())).thenReturn(true);
             when(azureBlobService.deleteProcessingBlob(TEST)).thenReturn(FILE_DELETED);
 

@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
+import uk.gov.hmcts.reform.hmi.models.ApiResponse;
 
 import java.io.IOException;
 
@@ -65,8 +66,8 @@ class DistributionServiceTest {
     void testSendProcessedJsonHmiFailed() {
         mockWebServerEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
-        String response = distributionService.sendProcessedJson(TEST_DATA);
-        assertEquals(null, response,
+        ApiResponse response = distributionService.sendProcessedJson(TEST_DATA);
+        assertEquals(400, response.getStatusCode(),
                      "Error logs did not contain message");
     }
 }

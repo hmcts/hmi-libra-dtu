@@ -67,7 +67,7 @@ class DistributionServiceTest {
         mockWebServerEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
         ApiResponse response = distributionService.sendProcessedJson(TEST_DATA);
-        assertEquals(400, response.getStatusCode(),
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode(),
                      "Error logs did not contain message");
     }
 }

@@ -48,7 +48,8 @@ public class DistributionService {
             log.info(String.format("Json data has been sent with response: %s", responseMessage));
             return new ApiResponse(HttpStatus.NO_CONTENT.value(), responseMessage);
         } catch (WebClientResponseException ex) {
-            log.error(String.format("Error response from HMI APIM: %s", ex.getResponseBodyAsString()));
+            log.error(String.format("Error response from HMI APIM: %s Status code: %s", ex.getResponseBodyAsString(),
+                                    ex.getStatusCode().value()));
             return new ApiResponse(ex.getStatusCode().value(), ex.getResponseBodyAsString());
         }
     }

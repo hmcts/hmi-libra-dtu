@@ -36,8 +36,6 @@ public class ProcessingService {
         byte[] blobData  = azureBlobService.downloadBlob(blob.getName());
 
         log.info(String.format("Download blob %s", blob.getName()));
-        log.info(String.format("Download blob %s data: %s", blob.getName(),
-                               new String(blobData, StandardCharsets.UTF_8)));
 
         //VALIDATE JSON FILE AGAINST SCHEMA FILE PROVIDED BY ROTA
         boolean isFileValid = validationService.isValid(validationConfiguration.getLibraHmiSchema(), blobData);

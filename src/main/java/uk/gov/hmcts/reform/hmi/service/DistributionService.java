@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.hmcts.reform.hmi.models.ApiResponse;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +18,7 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 
 @Slf4j
 @Service
+@SuppressWarnings("PMD.LawOfDemeter")
 public class DistributionService {
 
     private final String url;
@@ -29,9 +32,9 @@ public class DistributionService {
         this.url = url;
     }
 
-    public String sendProcessedJson(String jsonData) {
+    public ApiResponse sendProcessedJson(String jsonData) {
         try {
-            String apiResponse = webClient.post().uri(url + "/listings")
+            String responseMessage = webClient.post().uri(url + "/listings")
                 .attributes(clientRegistrationId("hmiApim"))
                 .header("Source-System", "CRIME")
                 .header("Destination-System", "SNL")
@@ -40,16 +43,14 @@ public class DistributionService {
                 .header("Accept", "application/json")
                 .body(BodyInserters.fromValue(jsonData))
                 .retrieve()
-                .onStatus(
-                    HttpStatus.BAD_REQUEST::equals,
-                    response -> response.bodyToMono(String.class).map(Exception::new))
                 .bodyToMono(String.class)
                 .block();
-            log.info(String.format("Json data has been sent with response: %s", apiResponse));
-            return apiResponse;
-        } catch (Exception ex) { //NOSONAR
-            log.error("Error response from HMI APIM:", ex.getMessage());
-            return ex.getMessage();
+            log.info(String.format("Json data has been sent with response: %s", responseMessage));
+            return new ApiResponse(HttpStatus.NO_CONTENT.value(), responseMessage);
+        } catch (WebClientResponseException ex) {
+            log.error(String.format("Error response from HMI APIM: %s Status code: %s", ex.getResponseBodyAsString(),
+                                    ex.getStatusCode().value()));
+            return new ApiResponse(ex.getStatusCode().value(), ex.getResponseBodyAsString());
         }
     }
 }

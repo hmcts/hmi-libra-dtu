@@ -51,13 +51,14 @@ public class ServiceNowService {
                 .bodyToMono(String.class).block();
             if (response != null
                 && response.contains("INC")) {
-                log.info("ServiceNow ticket has been created");
+                log.info(String.format("ServiceNow ticket has been created: %s", response));
                 return true;
             }
             log.error(String.format("Error while create ServiceNow ticket: %s", response));
             return false;
         } catch (WebClientResponseException ex) {
-            log.error(String.format("Error while create ServiceNow ticket: %s", ex.getResponseBodyAsString()));
+            log.error(String.format("Error while create ServiceNow ticket: %s Status code: %s",
+                                    ex.getResponseBodyAsString(), ex.getStatusCode().value()));
             return false;
         }
     }
